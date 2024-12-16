@@ -8,9 +8,10 @@ from email.mime.text import MIMEText
 import streamlit as st
 from dotenv import load_dotenv
 import gspread
-from google.oauth2.service_account import Credentials
+from google.oauth2 import service_account
 import time
 import os
+import toml
 
 # Load environment variables
 load_dotenv(override=True)
@@ -18,15 +19,28 @@ load_dotenv(override=True)
 # Google Sheets API setup
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets",
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-CREDENTIALS_FILE = os.getenv('GOOGLE_CREDENTIALS_FILE')
+
 API_KEY = os.getenv('API_KEY')
 SENDER_EMAIL = os.getenv('SENDER_EMAIL')
 SENDER_PASSWORD = os.getenv('SENDER_PASSWORD')
 
+# Load the secrets from the TOML file
+secrets = toml.load(".streamlit/secrets.toml")
+
+# Extract the service account key JSON string
+service_account_json = secrets["google_cloud"]["service_account_key"]
+
+# Parse the JSON string into a dictionary
+service_account_info = json.loads(service_account_json)
+
 # Helper function to get Google Sheets service
 def get_gsheet_service():
-    creds = Credentials.from_service_account_file(CREDENTIALS_FILE, scopes=SCOPE)
+    # Create credentials from the parsed JSON content
+    creds = service_account.Credentials.from_service_account_info(service_account_info, scopes=SCOPE)
+    
+    # Authorize the client
     client = gspread.authorize(creds)
+    
     return client
 
 # Function to evaluate a candidate and generate email with Grok API
