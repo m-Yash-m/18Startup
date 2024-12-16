@@ -18,10 +18,10 @@ load_dotenv(override=True)
 # Google Sheets API setup
 SCOPE = ["https://spreadsheets.google.com/feeds", "https://www.googleapis.com/auth/spreadsheets",
          "https://www.googleapis.com/auth/drive.file", "https://www.googleapis.com/auth/drive"]
-CREDENTIALS_FILE = 'emailauto-444816-c0fc7414af34.json'
-API_KEY = "xai-Age3ZQ1iREPjsun617Q4dfYD7rrssFYJilahzawzyA1U7Z3Cuxr22EMvW40AneyD6KeXKdYNxWYrpSiw"  # Replace with actual API key
-SENDER_EMAIL = "20210802074@dypiu.ac.in"  # Replace with your email
-SENDER_PASSWORD = "pvud cnvc xwto bdnv"  # Replace with your email password
+CREDENTIALS_FILE = os.getenv('GOOGLE_CREDENTIALS_FILE')
+API_KEY = os.getenv('API_KEY')
+SENDER_EMAIL = os.getenv('SENDER_EMAIL')
+SENDER_PASSWORD = os.getenv('SENDER_PASSWORD')
 
 # Helper function to get Google Sheets service
 def get_gsheet_service():
